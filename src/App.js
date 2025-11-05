@@ -275,7 +275,7 @@ export default function App() {
 
         {/* Footer */}
         <footer className="py-8 text-center opacity-70">
-          Built with ❤️ — CryptoSplit
+          Built with ❤️ — CryptoSplit and KiraPay
         </footer>
 
         {/* QR Modal */}
