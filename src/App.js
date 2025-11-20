@@ -59,16 +59,16 @@ export default function App() {
 
       const share = (Number(totalAmount) / addrArr.length).toFixed(6);
       const generated = [];
+      console.log("env here lets, see", process.env.REACT_APP_KIRAPAY_API_KEY);
 
       for (const addr of addrArr) {
         const res = await fetch(
-          "https://kirapay.focalfossa.site/api/link/generate",
+          "https://kirapay-api.holatech.app/api/link/generate",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "x-api-key":
-                process.env.REACT_APP_KIRAPAY_API_KEY || "[YOUR_API_KEY_HERE]",
+              "x-api-key": process.env.REACT_APP_KIRAPAY_API_KEY
             },
             body: JSON.stringify({
               price: Number(share),
