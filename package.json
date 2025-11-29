@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@fontsource/instrument-sans": "^5.2.8",
+    "@fontsource/manrope": "^5.2.8",
+    "@fontsource/oxanium": "^5.2.8",
     "@fontsource/plus-jakarta-sans": "^5.2.8",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

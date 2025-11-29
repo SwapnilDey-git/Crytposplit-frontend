@@ -2,11 +2,18 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import { QRCodeCanvas } from "qrcode.react";
-import "@fontsource/instrument-sans/400.css";
-import "@fontsource/instrument-sans/600.css";
-import "@fontsource/plus-jakarta-sans/700.css";
+
+// Font imports
+import "@fontsource/oxanium/400.css";
+import "@fontsource/oxanium/600.css";
+import "@fontsource/oxanium/700.css";
+import "@fontsource/oxanium/800.css";
+import "@fontsource/manrope/400.css";
+import "@fontsource/manrope/500.css";
+import "@fontsource/manrope/600.css";
 
 export default function App() {
+  // All state declarations
   const [darkMode, setDarkMode] = useState(true);
   const [totalAmount, setTotalAmount] = useState("");
   const [members, setMembers] = useState("");
@@ -17,13 +24,35 @@ export default function App() {
   const [qrOpen, setQrOpen] = useState(false);
   const [qrValue, setQrValue] = useState("");
 
+  // Set page metadata
+  useEffect(() => {
+    document.title = "CryptoSplit — Split Crypto Payments Effortlessly";
+    
+    const updateMeta = (name, content) => {
+      let meta = document.querySelector(`meta[name="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.name = name;
+        document.head.appendChild(meta);
+      }
+      meta.content = content;
+    };
+    
+    updateMeta('description', 'Split cryptocurrency bills and generate payment links instantly. Built for teams and DAOs with secure, trackable crypto payments powered by KiraPay.');
+    updateMeta('theme-color', darkMode ? '#030617' : '#4A70A9');
+  }, [darkMode]);
+
+  // Load history from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("cs_history");
     if (saved) setHistory(JSON.parse(saved));
   }, []);
 
+  // Save history to localStorage
   useEffect(() => {
-    localStorage.setItem("cs_history", JSON.stringify(history));
+    if (history.length > 0) {
+      localStorage.setItem("cs_history", JSON.stringify(history));
+    }
   }, [history]);
 
   const openQr = (value) => {
@@ -59,7 +88,6 @@ export default function App() {
 
       const share = (Number(totalAmount) / addrArr.length).toFixed(6);
       const generated = [];
-      console.log("env here lets, see", process.env.REACT_APP_KIRAPAY_API_KEY);
 
       for (const addr of addrArr) {
         const res = await fetch(
@@ -68,7 +96,7 @@ export default function App() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "x-api-key": process.env.REACT_APP_KIRAPAY_API_KEY
+              "x-api-key": process.env.REACT_APP_KIRAPAY_API_KEY,
             },
             body: JSON.stringify({
               price: Number(share),
@@ -106,7 +134,7 @@ export default function App() {
   return (
     <div className={`${darkMode ? "dark" : ""}`}>
       <div
-        className={`min-h-screen font-[Instrument Sans] ${
+        className={`min-h-screen font-[Manrope] ${
           darkMode
             ? "bg-[#030617] text-white"
             : "bg-gradient-to-br from-[#EFECE3] to-[#4A70A9] text-black"
@@ -131,11 +159,13 @@ export default function App() {
         <header className="fixed top-6 left-1/2 transform -translate-x-1/2 w-[92%] md:w-3/4 z-50">
           <div className="backdrop-blur-md bg-black/20 border border-white/10 rounded-full px-6 py-3 flex justify-between items-center shadow-xl">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center font-bold text-xl">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#4A70A9] to-[#06B6D4] flex items-center justify-center font-[Oxanium] font-bold text-xl tracking-wider">
                 CS
               </div>
               <div>
-                <div className="text-lg font-semibold">CryptoSplit</div>
+                <div className="text-lg font-[Oxanium] font-bold tracking-wide">
+                  CryptoSplit
+                </div>
                 <div className="text-xs opacity-70">
                   Split payments. Stay sane.
                 </div>
@@ -143,21 +173,21 @@ export default function App() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="px-3 py-1 rounded-full text-sm bg-white/5 hover:bg-white/10 transition">
+              <button className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 hover:bg-white/10 transition">
                 Home
               </button>
-              <button className="px-3 py-1 rounded-full text-sm bg-white/5 hover:bg-white/10 transition">
+              <button className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 hover:bg-white/10 transition">
                 History
               </button>
-              <button className="px-3 py-1 rounded-full text-sm bg-white/5 hover:bg-white/10 transition">
+              <button className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 hover:bg-white/10 transition">
                 Docs
               </button>
               <div className="w-px h-6 bg-white/10 mx-2" />
               <button
                 onClick={() => setDarkMode((d) => !d)}
-                className="px-3 py-1 rounded-full text-sm bg-white/5 hover:bg-white/10 transition"
+                className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 hover:bg-white/10 transition"
               >
-                {darkMode ? "Light" : "Dark"}
+                {darkMode ? "☀️ Light" : "🌙 Dark"}
               </button>
             </div>
           </div>
@@ -166,19 +196,42 @@ export default function App() {
         {/* Hero Section */}
         <main className="pt-36 pb-24 px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Text Section */}
               <div className="order-2 lg:order-1">
-                <h1 className="text-4xl md:text-6xl font-[Plus Jakarta Sans] font-extrabold leading-tight tracking-tight">
-                  <span className="bg-clip-text bg-gradient-to-r from-[#4A70A9] to-[#8FABD4] text-transparent">
-                    Split crypto
-                  </span>{" "}
-                  bills effortlessly
-                </h1>
-                <p className="mt-4 text-gray-300 max-w-xl">
-                  Create and share crypto payment links instantly. Designed for
-                  teams and DAOs — secure, trackable, and beautiful.
-                </p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <h1 className="text-5xl md:text-7xl font-[Oxanium] font-extrabold leading-[1.1] tracking-tight">
+                    <span className="bg-clip-text bg-gradient-to-r from-[#4A70A9] via-[#06B6D4] to-[#8FABD4] text-transparent">
+                      Split Crypto
+                    </span>
+                    <br />
+                    <span className={darkMode ? "text-white" : "text-gray-900"}>
+                      Bills Effortlessly
+                    </span>
+                  </h1>
+                  <p className="mt-6 text-lg text-gray-300 max-w-xl leading-relaxed">
+                    Create and share cryptocurrency payment links instantly. Designed
+                    for teams and DAOs — secure, trackable, and beautifully simple.
+                  </p>
+                  <div className="mt-8 flex gap-4">
+                    <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                      <div className="text-2xl font-[Oxanium] font-bold text-[#06B6D4]">
+                        ⚡ Instant
+                      </div>
+                      <div className="text-xs opacity-70">No delays</div>
+                    </div>
+                    <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                      <div className="text-2xl font-[Oxanium] font-bold text-[#06B6D4]">
+                        🔒 Secure
+                      </div>
+                      <div className="text-xs opacity-70">On-chain verified</div>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
 
               {/* Form Card */}
@@ -189,29 +242,37 @@ export default function App() {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <label className="text-xs opacity-70">Total amount</label>
+                  <h2 className="text-2xl font-[Oxanium] font-bold mb-6">
+                    Generate Split Links
+                  </h2>
+
+                  <label className="text-sm font-medium opacity-80">
+                    Total Amount
+                  </label>
                   <input
                     value={totalAmount}
                     onChange={(e) => setTotalAmount(e.target.value)}
                     placeholder="100"
-                    className="mt-2 w-full rounded-xl p-3 bg-black/10 border border-white/10 placeholder-gray-400 focus:outline-none"
+                    type="number"
+                    className="mt-2 w-full rounded-xl p-3.5 bg-black/20 border border-white/10 placeholder-gray-500 focus:outline-none focus:border-[#06B6D4] transition"
                   />
 
-                  <label className="mt-4 text-xs opacity-70">
-                    Members (comma separated)
+                  <label className="mt-5 block text-sm font-medium opacity-80">
+                    Member Addresses (comma separated)
                   </label>
-                  <input
+                  <textarea
                     value={members}
                     onChange={(e) => setMembers(e.target.value)}
                     placeholder="0xabc..., 0xdef..., 0x123..."
-                    className="mt-2 w-full rounded-xl p-3 bg-black/10 border border-white/10 placeholder-gray-400 focus:outline-none"
+                    rows={3}
+                    className="mt-2 w-full rounded-xl p-3.5 bg-black/20 border border-white/10 placeholder-gray-500 focus:outline-none focus:border-[#06B6D4] transition resize-none"
                   />
 
-                  <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="mt-5 grid grid-cols-2 gap-3">
                     <select
                       value={currency}
                       onChange={(e) => setCurrency(e.target.value)}
-                      className="rounded-xl p-3 bg-black/10 border border-white/10"
+                      className="rounded-xl p-3.5 bg-black/20 border border-white/10 font-medium focus:outline-none focus:border-[#06B6D4] transition"
                     >
                       <option>USDC</option>
                       <option>USDT</option>
@@ -221,7 +282,7 @@ export default function App() {
                     <button
                       onClick={generateLinks}
                       disabled={loading}
-                      className="rounded-xl p-3 bg-gradient-to-r from-[#4A70A9] to-[#8FABD4] font-semibold"
+                      className="rounded-xl p-3.5 bg-gradient-to-r from-[#4A70A9] to-[#06B6D4] font-[Oxanium] font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? "Processing..." : "Split & Generate"}
                     </button>
@@ -229,41 +290,47 @@ export default function App() {
 
                   {/* Generated Links */}
                   {links.length > 0 && (
-                    <div className="mt-6 space-y-3 max-h-56 overflow-auto">
+                    <div className="mt-6 space-y-3 max-h-64 overflow-auto pr-2 scrollbar-thin scrollbar-thumb-white/10">
                       {links.map((l, i) => (
-                        <div
+                        <motion.div
                           key={i}
-                          className="p-3 rounded-xl bg-white/5 border border-white/8 flex items-center justify-between"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.1 }}
+                          className="p-4 rounded-xl bg-white/5 border border-white/8 hover:bg-white/10 transition"
                         >
-                          <div className="break-all">
-                            <div className="font-medium">{l.address}</div>
-                            <a
-                              href={l.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-sm text-[#4A70A9] hover:underline"
-                            >
-                              Open link
-                            </a>
-                          </div>
-                          <div className="flex flex-col items-end gap-2">
-                            <div className="text-xs opacity-70">{l.status}</div>
-                            <div className="flex gap-2">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-mono text-sm truncate opacity-90">
+                                {l.address}
+                              </div>
+                              <a
+                                href={l.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-sm text-[#06B6D4] hover:underline font-medium"
+                              >
+                                Open payment link →
+                              </a>
+                            </div>
+                            <div className="flex gap-2 flex-shrink-0">
                               <button
                                 onClick={() => openQr(l.url)}
-                                className="px-3 py-1 rounded-lg bg-white/6"
+                                className="px-3 py-1.5 rounded-lg bg-white/6 hover:bg-white/10 text-sm font-medium transition"
+                                title="Show QR Code"
                               >
                                 QR
                               </button>
                               <button
                                 onClick={() => copyToClipboard(l.url)}
-                                className="px-3 py-1 rounded-lg bg-white/6"
+                                className="px-3 py-1.5 rounded-lg bg-white/6 hover:bg-white/10 text-sm font-medium transition"
+                                title="Copy Link"
                               >
                                 Copy
                               </button>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   )}
@@ -274,38 +341,57 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="py-8 text-center opacity-70">
-          Built with ❤️ — CryptoSplit and KiraPay
+        <footer className="py-10 text-center opacity-70">
+          <div className="font-[Oxanium] text-lg mb-2">
+            Built with ❤️ — CryptoSplit × KiraPay
+          </div>
+          <div className="text-sm">
+            Powered by blockchain technology for transparent payments
+          </div>
         </footer>
 
         {/* QR Modal */}
         {qrOpen && (
-          <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/60">
-            <div className="bg-white/5 p-6 rounded-2xl backdrop-blur-md border border-white/10">
-              <div className="mb-4 text-center">
-                <div className="text-sm opacity-80">Scan to pay</div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-60 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={() => setQrOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="bg-white/10 p-8 rounded-2xl backdrop-blur-md border border-white/20 max-w-sm w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-6 text-center">
+                <div className="font-[Oxanium] text-2xl font-bold mb-2">
+                  Scan to Pay
+                </div>
+                <div className="text-sm opacity-70">
+                  Use any crypto wallet to scan this QR code
+                </div>
               </div>
-              <div className="mx-auto w-56">
-               <QRCodeCanvas value={qrValue} size={200} />
+              <div className="mx-auto w-56 h-56 bg-white p-4 rounded-xl flex items-center justify-center">
+                <QRCodeCanvas value={qrValue} size={200} level="H" />
               </div>
-              <div className="mt-4 flex gap-3 justify-center">
+              <div className="mt-6 flex gap-3 justify-center">
                 <button
-                  onClick={() => {
-                    copyToClipboard(qrValue);
-                  }}
-                  className="px-4 py-2 rounded-lg bg-white/6"
+                  onClick={() => copyToClipboard(qrValue)}
+                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 font-medium transition"
                 >
-                  Copy link
+                  📋 Copy Link
                 </button>
                 <button
                   onClick={() => setQrOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/6"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#4A70A9] to-[#06B6D4] font-[Oxanium] font-bold hover:shadow-lg transition"
                 >
                   Close
                 </button>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
       </div>
     </div>
